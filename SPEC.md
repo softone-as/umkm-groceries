@@ -48,7 +48,7 @@ The technical stack is selected to prioritize strict ACID transactional integrit
 | **Frontend Framework** | **React** + **Vite** | React 18+, Vite 5+ | Instant HMR build times, rich component ecosystem, and lightweight SPA architecture. |
 | **Client Routing** | **TanStack Router** | v1+ | Full type-safe URL routing, first-class search param validation, and clean nested route layouts. |
 | **Client Server State** | **TanStack Query** | v5+ | Declarative server-state caching, automatic background refetching, optimistic updates, and query deduplication. |
-| **Styling & Design System** | **Vanilla CSS** + CSS Tokens | Modern CSS (CSS Variables) | High flexibility without heavy third-party framework overhead; optimal rendering performance and zero runtime bloat. |
+| **Styling & Design System** | **Tailwind CSS v4** | v4+ (CSS-first) | Utility-first CSS framework with CSS-native configuration, design token integration via `@theme`, and zero JavaScript runtime overhead. |
 | **Backend Framework** | **Express.js** | v4+ | Battle-tested, lightweight Node.js HTTP framework with a robust middleware ecosystem. |
 | **Type Safety** | **Strict TypeScript** | TypeScript 5.4+ | Enforced across `apps/web`, `apps/api`, and `packages/shared` for zero client-server contract drift. |
 | **Relational Database** | **PostgreSQL** | v15+ | Strict ACID compliance, row-level locking (`SELECT ... FOR UPDATE`), and database-level check constraints for inventory guarantees. |

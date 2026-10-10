@@ -15,7 +15,7 @@ The following components are approved per the PRD specification:
 | **Frontend Framework** | **React** with **Vite** | Modern, fast build times, component ecosystem, responsive single-page architecture. |
 | **Client Routing** | **TanStack Router** | Type-safe URL routing, search params validation, clean nested routes. |
 | **Server State Management** | **TanStack Query** | Declarative caching, background refetching, mutation lifecycle hooks. |
-| **Frontend Styling** | **Vanilla CSS** / Modern CSS Tokens | Highly flexible, no bloated external framework dependencies unless requested; clean aesthetic with responsive design. |
+| **Frontend Styling** | **Tailwind CSS v4** | CSS-first utility framework with `@theme` design token integration; no JavaScript runtime, works natively with Vite 5 via the `@tailwindcss/vite` plugin. |
 | **Backend Framework** | **Express.js** | Lightweight, mature Node.js HTTP framework with robust middleware ecosystem. |
 | **Type Safety** | **Strict TypeScript** | Enforced on both frontend and backend; `noImplicitAny: true`, strict null checks. |
 | **Database** | **PostgreSQL** | Relational ACID guarantees, row-level locking (`FOR UPDATE`), strong constraint support for inventory. |
@@ -39,7 +39,7 @@ The following components are approved per the PRD specification:
 ## 3. Tooling & Workspace Structure
 
 * **Monorepo Workspaces**:
-  * `apps/web/`: React + Vite + TanStack Router + TanStack Query + Vanilla CSS
+  * `apps/web/`: React + Vite + TanStack Router + TanStack Query + **Tailwind CSS v4**
   * `apps/api/`: Express.js + PostgreSQL + Strict TypeScript REST API
   * `packages/shared/`: Shared TypeScript domain types, validation schemas (Zod), and API contracts
 * **Node.js Runtime**: Modern LTS (v20+ recommended).
