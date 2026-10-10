@@ -1,0 +1,10 @@
+-- 001_initial_schema.down.sql
+DROP TABLE IF EXISTS store_settings CASCADE;
+DROP TABLE IF EXISTS order_status_history CASCADE;
+DROP TABLE IF EXISTS order_items CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS inventory_adjustments CASCADE;
+DROP TABLE IF EXISTS customer_accounts CASCADE;
+DROP TABLE IF EXISTS staff_users CASCADE;
+DROP TABLE IF EXISTS inventory CASCADE;
+DROP TABLE IF EXISTS products CASCADE;
