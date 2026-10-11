@@ -1,0 +1,96 @@
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/600.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+@import '@fontsource/plus-jakarta-sans/800.css';
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: #16a34a;
+  --color-primary-hover: #15803d;
+  --color-primary-light: #dcfce7;
+  --color-on-primary: #ffffff;
+  --color-secondary: #f59e0b;
+  --color-secondary-hover: #d97706;
+  --color-secondary-light: #fef3c7;
+  --color-tertiary: #0284c7;
+  --color-tertiary-light: #e0f2fe;
+  --color-canvas: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border-subtle: #e2e8f0;
+  --color-text-primary: #0f172a;
+  --color-text-body: #1e293b;
+  --color-text-muted: #64748b;
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-error: #ba1a1a;
+  --color-error-bg: #ffdad6;
+
+  --text-display: 32px;
+  --text-display--font-weight: 800;
+  --text-headline-lg: 28px;
+  --text-headline-lg--font-weight: 700;
+  --text-headline-lg-mobile: 22px;
+  --text-headline-lg-mobile--font-weight: 700;
+  --text-headline-md: 20px;
+  --text-headline-md--font-weight: 700;
+  --text-headline-sm: 16px;
+  --text-headline-sm--font-weight: 700;
+  --text-price-lg: 20px;
+  --text-price-lg--font-weight: 800;
+  --text-price-md: 16px;
+  --text-price-md--font-weight: 800;
+  --text-body-lg: 16px;
+  --text-body-lg--font-weight: 400;
+  --text-body-md: 14px;
+  --text-body-md--font-weight: 400;
+  --text-caption: 12px;
+  --text-caption--font-weight: 600;
+
+  --breakpoint-sm: 640px;
+  --breakpoint-lg: 1025px;
+  --container-store: 1280px;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--color-canvas);
+    color: var(--color-text-body);
+    font-family: var(--font-sans);
+    font-size: 16px;
+  }
+
+  button,
+  input {
+    font-family: inherit;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+}
