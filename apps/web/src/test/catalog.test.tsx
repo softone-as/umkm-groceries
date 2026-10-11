@@ -68,11 +68,32 @@ describe('CatalogPage', () => {
     expect(screen.getByTestId('product-add-to-cart-btn-p1')).toBeDisabled();
   });
 
+  it('shows item counts on category chips', async () => {
+    mockApi(() =>
+      json({
+        products: [product(), product({ id: 'p2', category: 'Minyak Goreng' })],
+      }),
+    );
+    renderPage();
+    await screen.findByTestId('product-card-p1');
+
+    const chips = screen.getAllByTestId('category-chip');
+    expect(chips.find((chip) => chip.textContent?.startsWith('Semua'))).toHaveTextContent('2');
+    expect(chips.find((chip) => chip.textContent?.startsWith('Beras'))).toHaveTextContent('1');
+    expect(chips.find((chip) => chip.textContent?.startsWith('Minyak Goreng'))).toHaveTextContent('1');
+  });
+
+  it('displays selling unit descriptions that already include a quantity', async () => {
+    mockApi(() => json({ products: [product({ selling_unit: 'isi 10 butir' })] }));
+    renderPage();
+    expect(await screen.findByText('isi 10 butir')).toBeInTheDocument();
+  });
+
   it('refetches with category param when a chip is clicked', async () => {
     mockApi(() => json({ products: [product()] }));
     renderPage();
     await screen.findByTestId('product-card-p1');
-    const chip = screen.getAllByTestId('category-chip').find((c) => c.textContent === 'Beras')!;
+    const chip = screen.getAllByTestId('category-chip').find((c) => c.textContent?.startsWith('Beras'))!;
     await userEvent.click(chip);
     await waitFor(() => expect(fetchMock.mock.calls.some(([u]) => String(u).includes('category=Beras'))).toBe(true));
     expect(chip).toHaveAttribute('aria-pressed', 'true');
