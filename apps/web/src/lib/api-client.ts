@@ -1,4 +1,4 @@
-import type { ApiErrorResponse } from '@santo/shared';
+import type { ApiErrorResponse, ApiSuccessResponse } from '@santo/shared';
 
 const BASE_URL = '/api/v1';
 
@@ -18,6 +18,15 @@ function isApiErrorResponse(value: unknown): value is ApiErrorResponse {
   if (typeof value !== 'object' || value === null) return false;
   const error = (value as { error?: unknown }).error;
   return typeof error === 'object' && error !== null && typeof (error as { message?: unknown }).message === 'string';
+}
+
+function isApiSuccessResponse(value: unknown): value is ApiSuccessResponse<unknown> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as { success?: unknown }).success === true &&
+    'data' in value
+  );
 }
 
 export async function apiGet<T>(
@@ -53,5 +62,6 @@ export async function apiGet<T>(
     }
     throw new ApiError(response.status, 'INTERNAL_ERROR', response.statusText || 'Terjadi kesalahan');
   }
+  if (isApiSuccessResponse(body)) return body.data as T;
   return body as T;
 }
