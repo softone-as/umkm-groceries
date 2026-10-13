@@ -28,6 +28,7 @@ const settings = {
 
 const json = (body: unknown, status = 200) =>
   Promise.resolve(new Response(JSON.stringify(body), { status }));
+const success = (data: unknown) => json({ success: true, data });
 
 let fetchMock: ReturnType<typeof vi.fn>;
 
@@ -41,7 +42,7 @@ function renderPage() {
 
 function mockApi(productsHandler: (url: string) => Promise<Response>) {
   fetchMock.mockImplementation((url: string) =>
-    url.includes('/store-settings') ? json(settings) : productsHandler(url),
+    url.includes('/store-settings') ? success(settings) : productsHandler(url),
   );
 }
 
@@ -53,7 +54,7 @@ afterEach(() => vi.unstubAllGlobals());
 
 describe('CatalogPage', () => {
   it('shows skeleton, then products with IDR price and header info', async () => {
-    mockApi(() => json({ products: [product()] }));
+    mockApi(() => success({ products: [product()] }));
     renderPage();
     expect(screen.getByTestId('product-grid-skeleton')).toBeInTheDocument();
     expect(await screen.findByTestId('product-price-p1')).toHaveTextContent('Rp 72.000');
@@ -62,7 +63,7 @@ describe('CatalogPage', () => {
   });
 
   it('shows Habis badge and disables add button when unavailable', async () => {
-    mockApi(() => json({ products: [product({ is_available: false, available_quantity: 0 })] }));
+    mockApi(() => success({ products: [product({ is_available: false, available_quantity: 0 })] }));
     renderPage();
     expect(await screen.findByTestId('product-availability-p1')).toHaveTextContent('Habis');
     expect(screen.getByTestId('product-add-to-cart-btn-p1')).toBeDisabled();
@@ -70,7 +71,7 @@ describe('CatalogPage', () => {
 
   it('shows item counts on category chips', async () => {
     mockApi(() =>
-      json({
+      success({
         products: [product(), product({ id: 'p2', category: 'Minyak Goreng' })],
       }),
     );
@@ -84,13 +85,13 @@ describe('CatalogPage', () => {
   });
 
   it('displays selling unit descriptions that already include a quantity', async () => {
-    mockApi(() => json({ products: [product({ selling_unit: 'isi 10 butir' })] }));
+    mockApi(() => success({ products: [product({ selling_unit: 'isi 10 butir' })] }));
     renderPage();
     expect(await screen.findByText('isi 10 butir')).toBeInTheDocument();
   });
 
   it('refetches with category param when a chip is clicked', async () => {
-    mockApi(() => json({ products: [product()] }));
+    mockApi(() => success({ products: [product()] }));
     renderPage();
     await screen.findByTestId('product-card-p1');
     const chip = screen.getAllByTestId('category-chip').find((c) => c.textContent?.startsWith('Beras'))!;
@@ -100,7 +101,7 @@ describe('CatalogPage', () => {
   });
 
   it('debounces search input (300ms) and shows empty state', async () => {
-    mockApi((url) => json({ products: url.includes('search=') ? [] : [product()] }));
+    mockApi((url) => success({ products: url.includes('search=') ? [] : [product()] }));
     renderPage();
     await screen.findByTestId('product-card-p1');
     const before = fetchMock.mock.calls.length;
@@ -115,7 +116,9 @@ describe('CatalogPage', () => {
   it('shows error banner with retry', async () => {
     let fail = true;
     mockApi(() =>
-      fail ? json({ success: false, error: { code: 'NOT_FOUND', message: 'x' } }, 404) : json({ products: [product()] }),
+      fail
+        ? json({ success: false, error: { code: 'NOT_FOUND', message: 'x' } }, 404)
+        : success({ products: [product()] }),
     );
     renderPage();
     const retry = await screen.findByRole('button', { name: 'Muat Ulang' });
@@ -126,6 +129,11 @@ describe('CatalogPage', () => {
 });
 
 describe('apiGet', () => {
+  it('unwraps the standard success response envelope', async () => {
+    fetchMock.mockImplementation(() => success({ products: [product()] }));
+    await expect(apiGet('/products')).resolves.toEqual({ products: [product()] });
+  });
+
   it('extracts typed errors from ApiErrorResponse', async () => {
     fetchMock.mockImplementation(() =>
       json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'Bad' } }, 400),
