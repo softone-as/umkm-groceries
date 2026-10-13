@@ -92,7 +92,7 @@ Browser (Mobile 360px / Desktop 1280px)
 | **Client Routing** | TanStack Router v1 | Type-safe URL routing & search param validation |
 | **Server State** | TanStack Query v5 | Declarative caching, background refetching |
 | **Styling** | Tailwind CSS v4 | CSS-first config, zero-runtime utility classes, design token integration |
-| **Backend** | Express.js v4 | Mature, lightweight Node.js HTTP framework |
+| **Backend** | Express.js v5 | Mature, lightweight Node.js HTTP framework |
 | **Type Safety** | TypeScript 5.4+ (strict) | End-to-end; zero `any` policy |
 | **Database** | PostgreSQL 15+ | ACID compliance, row-level locking, inventory constraints |
 | **Schema Validation** | Zod v3 | Shared schemas in `packages/shared` |
@@ -169,6 +169,7 @@ DATABASE_URL=postgresql://user:password@localhost:5432/santo_groceries
 SESSION_SECRET=your-secret-key-min-32-chars
 PORT=3000
 NODE_ENV=development
+CORS_ORIGINS=http://localhost:5173
 ```
 
 ### 3. Set Up the Database
@@ -184,12 +185,14 @@ npm run db:seed
 ### 4. Start Development Servers
 
 ```bash
-# Frontend (apps/web) — http://localhost:5173
-cd apps/web && npm run dev
+# Frontend — http://localhost:5173
+npm run dev --workspace=@santo/web
 
-# Backend (apps/api) — http://localhost:3000
-cd apps/api && npm run dev
+# Backend — http://localhost:3000
+npm run dev --workspace=@santo/api
 ```
+
+Set `CORS_ORIGINS` to a comma-separated allowlist of storefront origins in each deployment environment.
 
 ---
 
