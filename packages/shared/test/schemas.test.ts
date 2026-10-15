@@ -76,6 +76,23 @@ describe('createOrderSchema', () => {
     ).toThrow();
   });
 
+  it('rejects order prices beyond safe integer precision', () => {
+    expect(() =>
+      createOrderSchema.parse({
+        customer_name: 'Budi Santoso',
+        whatsapp_number: '081234567890',
+        payment_method: 'pay_at_store',
+        items: [
+          {
+            product_id: 'e7b0a884-18c7-4d92-91e8-78c0e251a31b',
+            quantity: 1,
+            expected_price_idr: Number.MAX_SAFE_INTEGER + 1,
+          },
+        ],
+      }),
+    ).toThrow();
+  });
+
   it('rejects invalid Indonesian phone numbers', () => {
     expect(() =>
       createOrderSchema.parse({

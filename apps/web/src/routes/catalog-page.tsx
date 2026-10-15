@@ -6,11 +6,13 @@ import { SearchBar } from '../components/search-bar';
 import { StoreHeader } from '../components/store-header';
 import { useProducts } from '../hooks/use-products';
 import { useStoreSettings } from '../hooks/use-store-settings';
+import { useCart } from '../hooks/use-cart';
 
 export function CatalogPage() {
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState('');
   const settings = useStoreSettings();
+  const { addItem } = useCart();
   const allProducts = useProducts(undefined, '');
   const products = useProducts(category, search);
   const categoryCounts = allProducts.data?.reduce<Record<string, number>>((counts, product) => {
@@ -99,7 +101,7 @@ export function CatalogPage() {
               </p>
             </div>
           ) : (
-            <ProductGrid products={products.data} />
+            <ProductGrid products={products.data} onAdd={addItem} />
           )}
         </section>
       </main>

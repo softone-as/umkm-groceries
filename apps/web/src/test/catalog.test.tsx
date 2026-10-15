@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApiError, apiGet } from '../lib/api-client';
 import { createQueryClient } from '../lib/query-client';
 import { CatalogPage } from '../routes/catalog-page';
+import { CartProvider } from '../context/cart-context';
 
 const product = (over: Record<string, unknown> = {}) => ({
   id: 'p1',
@@ -35,7 +36,9 @@ let fetchMock: ReturnType<typeof vi.fn>;
 function renderPage() {
   return render(
     <QueryClientProvider client={createQueryClient()}>
-      <CatalogPage />
+      <CartProvider>
+        <CatalogPage />
+      </CartProvider>
     </QueryClientProvider>,
   );
 }

@@ -1,3 +1,5 @@
+import type { IdrAmount } from '../utils/branded-types.js';
+
 export type OrderState =
   | 'submitted'
   | 'accepted'
@@ -70,4 +72,60 @@ export interface OrderWithDetails extends Order {
     readonly address: string;
     readonly pickup_hours: string;
   } | undefined;
+}
+
+export interface OrderCreationResponse {
+  readonly order: {
+    readonly id: string;
+    readonly reference_code: string;
+    readonly order_state: OrderState;
+    readonly payment_state: PaymentState;
+    readonly payment_method: PaymentMethod;
+    readonly total_amount_idr: IdrAmount;
+    readonly whatsapp_url: string;
+    readonly guest_access_token?: string;
+    readonly guest_tracking_url?: string;
+    readonly items: readonly {
+      readonly product_id: string;
+      readonly name: string;
+      readonly selling_unit: string;
+      readonly unit_price_idr: IdrAmount;
+      readonly quantity: number;
+      readonly line_total_idr: IdrAmount;
+    }[];
+    readonly pickup_info: {
+      readonly address: string;
+      readonly pickup_hours: string;
+    };
+    readonly bank_transfer_instructions?: string;
+  };
+}
+
+export interface GuestOrderTrackingResponse {
+  readonly order: {
+    readonly reference_code: string;
+    readonly customer_name: string;
+    readonly order_state: OrderState;
+    readonly payment_state: PaymentState;
+    readonly payment_method: PaymentMethod;
+    readonly total_amount_idr: IdrAmount;
+    readonly items: readonly {
+      readonly product_id: string;
+      readonly name: string;
+      readonly selling_unit: string;
+      readonly unit_price_idr: IdrAmount;
+      readonly quantity: number;
+      readonly line_total_idr: IdrAmount;
+    }[];
+    readonly status_history: readonly {
+      readonly from_state: string;
+      readonly to_state: string;
+      readonly actor_type: string;
+      readonly created_at: string;
+    }[];
+    readonly pickup_info: {
+      readonly address: string;
+      readonly pickup_hours: string;
+    };
+  };
 }

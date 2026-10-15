@@ -29,6 +29,24 @@ function isApiSuccessResponse(value: unknown): value is ApiSuccessResponse<unkno
   );
 }
 
+async function readApiResponse<T>(response: Response): Promise<T> {
+  let body: unknown = null;
+  try {
+    body = await response.json();
+  } catch {
+    body = null;
+  }
+
+  if (!response.ok) {
+    if (isApiErrorResponse(body)) {
+      throw new ApiError(response.status, body.error.code, body.error.message, body.error.details);
+    }
+    throw new ApiError(response.status, 'INTERNAL_ERROR', response.statusText || 'Terjadi kesalahan');
+  }
+  if (isApiSuccessResponse(body)) return body.data as T;
+  return body as T;
+}
+
 export async function apiGet<T>(
   path: string,
   params?: Record<string, string | undefined>,
@@ -49,19 +67,21 @@ export async function apiGet<T>(
     throw new ApiError(0, 'NETWORK_ERROR', 'Gagal terhubung ke server');
   }
 
-  let body: unknown = null;
+  return readApiResponse<T>(response);
+}
+
+export async function apiPost<T>(path: string, body: unknown, headers: Record<string, string> = {}): Promise<T> {
+  let response: Response;
   try {
-    body = await response.json();
-  } catch {
-    body = null;
+    response = await fetch(`${BASE_URL}${path}`, {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json', ...headers },
+      body: JSON.stringify(body),
+    });
+  } catch (cause) {
+    if (cause instanceof DOMException && cause.name === 'AbortError') throw cause;
+    throw new ApiError(0, 'NETWORK_ERROR', 'Gagal terhubung ke server');
   }
 
-  if (!response.ok) {
-    if (isApiErrorResponse(body)) {
-      throw new ApiError(response.status, body.error.code, body.error.message, body.error.details);
-    }
-    throw new ApiError(response.status, 'INTERNAL_ERROR', response.statusText || 'Terjadi kesalahan');
-  }
-  if (isApiSuccessResponse(body)) return body.data as T;
-  return body as T;
+  return readApiResponse<T>(response);
 }
