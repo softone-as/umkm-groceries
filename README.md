@@ -194,6 +194,26 @@ npm run dev --workspace=@santo/api
 
 Set `CORS_ORIGINS` to a comma-separated allowlist of storefront origins in each deployment environment.
 
+### Run with Docker
+
+Requirements: Docker with the Compose plugin.
+
+```bash
+cp .env.docker.example .env
+# Replace SESSION_SECRET with a random value of at least 32 characters.
+docker compose up --build
+```
+
+Open the storefront at [http://localhost:8080](http://localhost:8080). The API runs behind the web server, and database migrations run automatically when the API starts. PostgreSQL data and uploaded images are stored in named Docker volumes.
+
+To seed the database after startup:
+
+```bash
+docker compose exec api node apps/api/dist/db/seed.js
+```
+
+Stop the services with `docker compose down`. To also delete the database and uploaded images, use `docker compose down --volumes`.
+
 ---
 
 ## NPM Commands
