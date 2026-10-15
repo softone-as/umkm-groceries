@@ -8,6 +8,16 @@ const CONFLICT_ERROR_CODE = 'CONFLICT';
 export class NotFoundError extends Error {}
 export class ConflictError extends Error {}
 export class InsufficientStockError extends Error {}
+export class OrderRequestError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly status: number,
+    public readonly details?: unknown,
+  ) {
+    super(message);
+  }
+}
 
 function localizedValidationMessage(issue: ZodError['issues'][number]): string {
   if (issue.code === 'too_small') return 'Nilai yang dikirim terlalu kecil atau belum diisi.';
@@ -51,6 +61,11 @@ export const errorHandler: ErrorRequestHandler = (error: unknown, _request, resp
 
   if (error instanceof InsufficientStockError) {
     response.sendError(ERROR_CODES.INSUFFICIENT_STOCK, error.message || 'Stok tidak mencukupi.', undefined, 422);
+    return;
+  }
+
+  if (error instanceof OrderRequestError) {
+    response.sendError(error.code, error.message, error.details, error.status);
     return;
   }
 

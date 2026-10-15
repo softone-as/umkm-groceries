@@ -3,6 +3,8 @@ import {
   formatIdr,
   calculateAvailableStock,
   asIdr,
+  addIdr,
+  multiplyIdr,
   sanitizePhoneNumber,
   maskPhoneNumber,
 } from '../src/index.js';
@@ -60,6 +62,17 @@ describe('asIdr', () => {
   it('throws TypeError for negative numbers', () => {
     expect(() => asIdr(-100)).toThrowError(TypeError);
   });
+
+  it('rejects integers outside JavaScript safe precision', () => {
+    expect(() => asIdr(Number.MAX_SAFE_INTEGER + 1)).toThrowError(TypeError);
+  });
+
+    it('multiplies and adds whole Rupiah amounts without losing safe precision', () => {
+      expect(multiplyIdr(15000, 2)).toBe(30000);
+      expect(addIdr(30000, 12000)).toBe(42000);
+      expect(() => multiplyIdr(Number.MAX_SAFE_INTEGER, 2)).toThrowError(TypeError);
+      expect(() => addIdr(Number.MAX_SAFE_INTEGER, 1)).toThrowError(TypeError);
+    });
 });
 
 describe('sanitizePhoneNumber & maskPhoneNumber', () => {

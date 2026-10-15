@@ -10,7 +10,8 @@ export const orderItemInputSchema = z.object({
   expected_price_idr: z
     .number()
     .int('Harga harus bilangan bulat')
-    .nonnegative('Harga tidak boleh negatif'),
+    .nonnegative('Harga tidak boleh negatif')
+    .refine(Number.isSafeInteger, 'Harga melebihi batas nilai Rupiah yang aman'),
 });
 
 export const createOrderSchema = z.object({

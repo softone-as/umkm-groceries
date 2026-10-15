@@ -11,9 +11,11 @@ import { requestLogger } from './middlewares/request-logger.js';
 import { responseHelpers } from './middlewares/response-helpers.js';
 import { createProductRouter } from './modules/products/product-router.js';
 import { createStoreSettingsRouter } from './modules/store-settings/store-settings-router.js';
+import { createOrderRouter } from './modules/orders/order-router.js';
+import { createGuestOrderRouter } from './modules/orders/guest-order-router.js';
 
 export interface AppOptions {
-  pool?: Pick<Pool, 'query'>;
+  pool?: Pick<Pool, 'query' | 'connect'>;
   imageDirectory?: string;
 }
 
@@ -53,6 +55,8 @@ export function createApp(options: AppOptions = {}): express.Express {
   const api = express.Router();
   api.use('/products', createProductRouter(database));
   api.use('/store-settings', createStoreSettingsRouter(database));
+  api.use('/orders', createOrderRouter(database));
+  api.use('/guest', createGuestOrderRouter(database));
   app.use('/api/v1', api);
 
   app.use((_request, response) => {
